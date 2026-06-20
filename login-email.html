@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ورود</title>
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="auth-box">
+
+    <h1>ورود</h1>
+    <p class="auth-subtitle">خوش برگشتید!</p>
+
+    <div id="error-msg" style="display:none; background:#ffe0e0; color:#c00; padding:10px; border-radius:8px; margin-bottom:15px; font-size:13px;"></div>
+
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="ایمیل">
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="رمز عبور">
+    </div>
+
+    <button id="login-btn" onclick="loginUser()">ورود</button>
+
+    <p>حساب ندارید؟ <a href="register.html">ثبت نام</a></p>
+
+</div>
+
+<!-- دکمه شناور تلگرام -->
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+    authDomain: "gksguide1-e7464.firebaseapp.com",
+    projectId: "gksguide1-e7464",
+    storageBucket: "gksguide1-e7464.firebasestorage.app",
+    messagingSenderId: "935501118637",
+    appId: "1:935501118637:web:bad899f43f835d2e1c9a24",
+    measurementId: "G-4JYJ308GET"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.loginUser = async function() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+    const btn = document.getElementById('login-btn');
+
+    errorMsg.style.display = 'none';
+
+    if (!email || !password) {
+        errorMsg.textContent = 'لطفاً ایمیل و رمز عبور را وارد کنید.';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    btn.textContent = 'در حال ورود...';
+    btn.disabled = true;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = 'index.html';
+    } catch (error) {
+        let msg = 'ایمیل یا رمز عبور اشتباه است.';
+        if (error.code === 'auth/user-not-found') msg = 'کاربری با این ایمیل پیدا نشد.';
+        if (error.code === 'auth/wrong-password') msg = 'رمز عبور اشتباه است.';
+        if (error.code === 'auth/invalid-email') msg = 'فرمت ایمیل صحیح نیست.';
+        if (error.code === 'auth/too-many-requests') msg = 'تعداد تلاش‌ها زیاد شد. چند دقیقه بعد دوباره امتحان کن.';
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
+        btn.textContent = 'ورود';
+        btn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
