@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبت نام</title>
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="auth-box">
+
+    <h1>ثبت نام</h1>
+    <p class="auth-subtitle">حساب کاربری خود را بسازید</p>
+
+    <div id="error-msg" style="display:none; background:#ffe0e0; color:#c00; padding:10px; border-radius:8px; margin-bottom:15px; font-size:13px;"></div>
+    <div id="success-msg" style="display:none; background:#e0ffe0; color:#080; padding:10px; border-radius:8px; margin-bottom:15px; font-size:13px;"></div>
+
+    <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="name" placeholder="نام و نام خانوادگی">
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="ایمیل">
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="رمز عبور (حداقل ۶ کاراکتر)">
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password2" placeholder="تکرار رمز عبور">
+    </div>
+
+    <button id="register-btn" onclick="registerUser()">ایجاد حساب</button>
+
+    <p>حساب دارید؟ <a href="login-email.html">ورود</a></p>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+    authDomain: "gksguide1-e7464.firebaseapp.com",
+    projectId: "gksguide1-e7464",
+    storageBucket: "gksguide1-e7464.firebasestorage.app",
+    messagingSenderId: "935501118637",
+    appId: "1:935501118637:web:bad899f43f835d2e1c9a24",
+    measurementId: "G-4JYJ308GET"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.registerUser = async function() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+    const errorMsg = document.getElementById('error-msg');
+    const successMsg = document.getElementById('success-msg');
+    const btn = document.getElementById('register-btn');
+
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
+
+    if ( !name || !email || !password || !password2) {
+        errorMsg.textContent = 'لطفاً همه فیلدها را پر کنید.';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    if (password !== password2) {
+        errorMsg.textContent = 'رمز عبور و تکرار آن یکسان نیستند.';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    if (password.length < 6) {
+        errorMsg.textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    btn.textContent = 'در حال ثبت‌نام...';
+    btn.disabled = true;
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
+        successMsg.textContent = 'ثبت‌نام موفق! در حال انتقال...';
+        successMsg.style.display = 'block';
+        setTimeout(() => window.location.href = 'index.html', 1500);
+    } catch (error) {
+        let msg = 'خطایی رخ داد. دوباره تلاش کنید.';
+        if (error.code === 'auth/email-already-in-use') msg = 'این ایمیل قبلاً ثبت شده است.';
+        if (error.code === 'auth/invalid-email') msg = 'فرمت ایمیل صحیح نیست.';
+        if (error.code === 'auth/weak-password') msg = 'رمز عبور خیلی ضعیف است.';
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
+        btn.textContent = 'ایجاد حساب';
+        btn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
