@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وبینار GKS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="webinars.css">
+</head>
+<body>
+
+<a href="webinars.html" class="back-btn">
+<i class="fas fa-arrow-left"></i> بازگشت به وبینارها
+</a>
+
+<div class="container">
+    <h1>آشنایی با بورسیه GKS</h1>
+    <div class="video">
+        <video controls>
+            <source src="hosok.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="description">
+        <h3>توضیحات وبینار</h3>
+        <p>در این وبینار درباره شرایط بورسیه GKS، مدارک مورد نیاز، دانشگاه های کره جنوبی، مراحل اپلای و نکات مهم مصاحبه صحبت شده است.</p>
+    </div>
+</div>
+
+<!-- Comments Section -->
+<div class="comments-section">
+    <h2>نظرات کاربران</h2>
+
+    <div id="login-warning" class="login-warning">
+        برای ثبت نظر باید وارد حساب کاربری شوید.
+        <br><br>
+        <a href="login-email.html">ورود</a> &nbsp;|&nbsp; <a href="register.html">ثبت نام</a>
+    </div>
+
+    <div id="comment-form" style="display:none; margin-bottom:25px;">
+        <div style="background:#f0f4ff; padding:15px; border-radius:12px; margin-bottom:15px;">
+            <span style="font-size:13px; color:#0b4cc4;"><i class="fas fa-user-circle"></i> در حال ارسال به عنوان: </span>
+            <strong id="commenter-name" style="color:#0b4cc4;"></strong>
+        </div>
+        <textarea id="comment-text" placeholder="نظر خود را بنویسید..." style="width:100%; min-height:100px; padding:12px; border:1px solid #ddd; border-radius:10px; font-family:Vazirmatn,tahoma; font-size:14px; resize:vertical;"></textarea>
+        <button onclick="submitComment()" style="margin-top:10px; padding:10px 20px; background:#0b4cc4; color:white; border:none; border-radius:8px; cursor:pointer; font-family:Vazirmatn,tahoma; font-size:14px;">
+            <i class="fas fa-paper-plane"></i> ثبت نظر
+        </button>
+    </div>
+
+    <div id="comments-list">
+        <div style="text-align:center; color:#999; padding:20px;" id="loading-comments">
+            <i class="fas fa-spinner fa-spin"></i> در حال بارگذاری نظرات...
+        </div>
+    </div>
+</div>
+
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const commentsRef = db.collection('comments').doc('webinar1').collection('items');
+
+    // بررسی لاگین
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            document.getElementById('login-warning').style.display = 'none';
+            document.getElementById('comment-form').style.display = 'block';
+            document.getElementById('commenter-name').textContent = user.displayName || user.email;
+        } else {
+            document.getElementById('login-warning').style.display = 'block';
+            document.getElementById('comment-form').style.display = 'none';
+        }
+    });
+
+    // لود کامنت‌ها از Firestore
+    commentsRef.orderBy('timestamp', 'desc').onSnapshot(function(snapshot) {
+        document.getElementById('loading-comments').style.display = 'none';
+        const list = document.getElementById('comments-list');
+        list.innerHTML = '';
+        if (snapshot.empty) {
+            list.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">هنوز نظری ثبت نشده است.</div>';
+            return;
+        }
+
+        snapshot.forEach(function(doc) {
+            const data = doc.data();
+            const div = document.createElement('div');
+            div.className = 'comment';
+            div.innerHTML =` 
+                <div class="comment-user"><strong>${data.name}</strong> <span style="font-size:11px; color:#999;">${data.time || ''}</span></div>
+                <div class="comment-text">${data.text}</div>
+            `;
+            list.appendChild(div);
+        });
+    });
+
+    // ثبت کامنت
+    window.submitComment = async function() {
+        const text = document.getElementById('comment-text').value.trim();
+        const user = auth.currentUser;
+        if (!text || !user) return;
+
+        const btn = document.querySelector('#comment-form button');
+        btn.textContent = 'در حال ارسال...';
+        btn.disabled = true;
+
+        try {
+            await commentsRef.add({
+                name: user.displayName || user.email,
+                text: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                time: new Date().toLocaleDateString('fa-IR')
+            });
+            document.getElementById('comment-text').value = '';
+        } catch (e) {
+            alert('خطا در ارسال نظر. لطفاً دوباره تلاش کنید.');
+        }
+
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> ثبت نظر';
+        btn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
