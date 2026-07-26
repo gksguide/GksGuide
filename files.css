@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+
+body{
+    font-family: 'Vazirmatn', tahoma;
+    background:#f5f5f5;
+    margin:0;
+}
+
+.top-bar{
+    background:white;
+    padding:12px 15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.top-bar a{
+    text-decoration:none;
+    background:#0b4cc4;
+    color:white;
+    padding:9px 14px;
+    border-radius:8px;
+    font-size: 14px;
+}
+
+.container{
+    max-width:900px;
+    margin:20px auto;
+    padding:0 15px;
+    text-align:center;
+}
+
+.container h2{
+    color:#0b4cc4;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+.files-container{
+    max-width:900px;
+    margin:auto;
+    padding:15px;
+}
+
+.file-card{
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.file-card h3{
+    color:#0b4cc4;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.file-card p{
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+    line-height: 1.8;
+}
+
+.file-btn{
+    display:inline-block;
+    margin-top:10px;
+    background:#16a34a;
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:8px;
+    font-size: 14px;
+    font-family: 'Vazirmatn', tahoma;
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+    .container h2{
+        font-size: 17px;
+    }
+
+    .files-container{
+        padding: 12px;
+    }
+
+    .file-card{
+        padding: 15px;
+    }
+
+    .file-card h3{
+        font-size: 15px;
+    }
+}
+/* دکمه شناور تلگرام */
+.float-telegram {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background: #229ED9;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-decoration: none;
+    transition: .3s;
+    z-index: 999;
+}
+
+.float-telegram:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(34,158,217,0.4);
+}
+
+@media(max-width:768px){
+    .float-telegram {
+        bottom: 15px;
+        left: 15px;
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
+}
