@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ورود</title>
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="auth-box">
+    <h1>ورود</h1>
+    <p class="auth-subtitle">خوش برگشتید!</p>
+<div style="background:#fff3cd; border:1px solid #ffe69c; padding:10px 15px; border-radius:8px; font-size:13px; margin-bottom:15px; line-height:2;">
+    ⚠️ برای ثبت‌نام و ورود لطفاً <strong>VPN</strong> را روشن کنید.
+</div>
+    <div id="error-msg" style="display:none; background:#ffe0e0; color:#c00; padding:10px; border-radius:8px; margin-bottom:15px; font-size:13px;"></div>
+    <div id="success-msg" style="display:none; background:#e0ffe0; color:#080; padding:10px; border-radius:8px; margin-bottom:15px; font-size:13px; line-height:1.9;"></div>
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="ایمیل">
+    </div>
+    <div id="login-fields">
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="رمز عبور">
+        </div>
+        <p style="text-align:left; margin:-8px 0 15px;">
+            <a href="#" id="forgot-link" style="font-size:12px; color:#c2487a; text-decoration:underline;">رمز عبور را فراموش کرده‌اید؟</a>
+        </p>
+        <button id="login-btn">ورود</button>
+    </div>
+    <div id="reset-fields" style="display:none;">
+        <p style="font-size:13px; color:#666; line-height:2; margin-bottom:15px;">
+            ایمیلی که با آن ثبت‌نام کرده‌اید را در بالا وارد کنید؛ لینک بازیابی رمز عبور برایتان ارسال می‌شود.
+        </p>
+        <button id="reset-btn">ارسال لینک بازیابی رمز</button>
+        <p><a href="#" id="back-to-login" style="font-size:13px;">بازگشت به ورود</a></p>
+    </div>
+    <p id="register-link">حساب ندارید؟ <a href="register.html">ثبت نام</a></p>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+window.onload = function() {
+const firebaseConfig = {
+    apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+    authDomain: "gksguide1-e7464.firebaseapp.com",
+    projectId: "gksguide1-e7464",
+    storageBucket: "gksguide1-e7464.firebasestorage.app",
+    messagingSenderId: "935501118637",
+    appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+document.getElementById('login-btn').addEventListener('click', async function() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+    const successMsg = document.getElementById('success-msg');
+    const btn = document.getElementById('login-btn');
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
+    if (!email || !password) {
+        errorMsg.textContent = 'لطفاً ایمیل و رمز عبور را وارد کنید.';
+        errorMsg.style.display = 'block';
+        return;
+    }
+    btn.textContent = 'در حال ورود...';
+    btn.disabled = true;
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        window.location.href = 'index.html';
+    } catch (error) {
+        let msg = 'خطایی رخ داد: ' + error.message;
+        if (error.code === 'auth/user-not-found') msg = 'حساب کاربری با این ایمیل وجود ندارد.';
+        if (error.code === 'auth/wrong-password') msg = 'رمز عبور اشتباه است.';
+        if (error.code === 'auth/invalid-email') msg = 'فرمت ایمیل صحیح نیست.';
+        if (error.code === 'auth/too-many-requests') msg = 'تعداد تلاش زیاد است. کمی صبر کنید.';
+        if (error.code === 'auth/invalid-credential') msg = 'ایمیل یا رمز عبور اشتباه است.';
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
+        btn.t
+
+extContent = 'ورود';
+        btn.disabled = false;
+    }
+});
+// نمایش فرم فراموشی رمز
+const loginFields = document.getElementById('login-fields');
+const resetFields = document.getElementById('reset-fields');
+const registerLink = document.getElementById('register-link');
+const authTitle = document.querySelector('.auth-box h1');
+const authSubtitle = document.querySelector('.auth-subtitle');
+const errorMsg = document.getElementById('error-msg');
+const successMsg = document.getElementById('success-msg');
+document.getElementById('forgot-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    loginFields.style.display = 'none';
+    registerLink.style.display = 'none';
+    resetFields.style.display = 'block';
+    authTitle.textContent = 'بازیابی رمز عبور';
+    authSubtitle.textContent = 'ایمیل خود را برای دریافت لینک بازیابی وارد کنید';
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
+});
+document.getElementById('back-to-login').addEventListener('click', function(e) {
+    e.preventDefault();
+    resetFields.style.display = 'none';
+    loginFields.style.display = 'block';
+    registerLink.style.display = 'block';
+    authTitle.textContent = 'ورود';
+    authSubtitle.textContent = 'خوش برگشتید!';
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
+});
+// ارسال ایمیل واقعی بازیابی رمز عبور از طریق Firebase
+document.getElementById('reset-btn').addEventListener('click', async function() {
+    const email = document.getElementById('email').value.trim();
+    const resetBtn = document.getElementById('reset-btn');
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
+    if (!email) {
+        errorMsg.textContent = 'لطفاً ایمیل خود را وارد کنید.';
+        errorMsg.style.display = 'block';
+        return;
+    }
+    resetBtn.textContent = 'در حال ارسال...';
+    resetBtn.disabled = true;
+    try {
+        await auth.sendPasswordResetEmail(email);
+        successMsg.textContent = 'لینک بازیابی رمز عبور به ' + email + ' ارسال شد. صندوق ورودی (و پوشه اسپم) را بررسی کنید.';
+        successMsg.style.display = 'block';
+    } catch (error) {
+        let msg = 'خطایی رخ داد: ' + error.message;
+        if (error.code === 'auth/user-not-found') msg = 'حساب کاربری با این ایمیل وجود ندارد.';
+        if (error.code === 'auth/invalid-email') msg = 'فرمت ایمیل صحیح نیست.';
+        if (error.code === 'auth/too-many-requests') msg = 'تعداد تلاش زیاد است. کمی بعد دوباره امتحان کنید.';
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
+    }
+    resetBtn.textContent = 'ارسال لینک بازیابی رمز';
+    resetBtn.disabled = false;
+});
+}
+</script>
+</body>
+</html>
