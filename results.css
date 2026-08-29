@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+
+html, body{
+    max-width: 100%;
+    overflow-x: hidden;
+}
+body{
+    font-weight: 500;
+}
+
+body{
+    font-family: 'Vazirmatn', tahoma;
+    background: linear-gradient(135deg, #fdeef3 0%, #eafaf1 100%);
+    background-attachment: fixed;
+    margin:0;
+}
+
+img{
+    max-width: 100%;
+    height: auto;
+}
+
+.top-bar{
+    background:white;
+    padding:12px 15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.top-bar a{
+    text-decoration:none;
+    background:#c2487a;
+    color:white;
+    padding:9px 14px;
+    border-radius:8px;
+    font-size: 14px;
+}
+
+h2{
+    text-align:center;
+    margin:15px;
+    color:#c2487a;
+    font-size: 20px;
+}
+
+/* grid */
+.container{
+    padding:15px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:15px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 4px 18px rgba(0,0,0,0.12);
+    border-top:5px solid #c2487a;
+}
+
+/* کارت پروفایل تجربیات مشاوره */
+.profile-card{
+    display:block;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 4px 18px rgba(0,0,0,0.12);
+    border-top:5px solid #c2487a;
+    text-align:center;
+    text-decoration:none;
+    color:inherit;
+    padding:28px 22px;
+    transition:.3s;
+}
+
+.profile-card:nth-child(even){
+    border-top:5px solid #5cb377;
+}
+
+.profile-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 28px rgba(194,72,122,0.22);
+}
+
+.profile-photo{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    object-fit:cover;
+    margin:0 auto 15px;
+    display:block;
+    border:3px solid #fdeef3;
+}
+
+.profile-name{
+    font-size:16px;
+    color:#1a1a1a;
+    margin-bottom:8px;
+}
+
+.profile-meta{
+    font-size:13px;
+    color:#444;
+    margin-bottom:16px;
+}
+
+.profile-meta-en{
+    border-top:1px dashed #d3f0da;
+    padding-top:14px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    direction:ltr;
+    font-family: Arial, sans-serif;
+}
+
+.profile-meta-en span{
+    font-size:12px;
+    color:#666;
+}
+
+.profile-name-en{
+    font-weight:700;
+    color:#c2487a !important;
+    font-size:13px !important;
+}
+
+@media(max-width:768px){
+    .profile-card{
+        padding:20px 15px;
+    }
+    .profile-photo{
+        width:80px;
+        height:80px;
+    }
+    .profile-name{
+        font-size:15px;
+    }
+    .profile-meta, .profile-meta-en span{
+        font-size:12px;
+    }
+}
+
+
+.card:nth-child(even){
+    border-top:4px solid #5cb377;
+}
+
+.card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:22px;
+}
+.card-content h3{
+    margin-bottom:8px;
+    font-size: 15px;
+}
+
+.card-content h3 a{
+    text-decoration:none;
+    color:#c2487a;
+}
+
+.card-content p{
+    font-size: 13px;
+    color: #444;
+}
+
+/* detail page */
+.detail-container{
+    max-width:800px;
+    margin:20px auto;
+    background:white;
+    border-radius:15px;
+    padding:34px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.12);
+}
+
+.detail-container h2{
+    color:#c2487a;
+    margin-bottom:15px;
+    font-size: 18px;
+    text-align: right;
+}
+
+.screenshot{
+    width:100%;
+    border-radius:10px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+}
+
+.description{
+    line-height:2.2;
+    color:#1a1a1a;
+    font-size:14px;
+}
+
+.description h3{
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 2.2;
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+    h2{
+        font-size: 17px;
+        margin: 12px;
+    }
+
+    .container{
+        grid-template-columns: 1fr;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .card img{
+        height: 160px;
+    }
+
+    .card-content{
+        padding: 16px;
+    }
+
+    .card-content h3{
+        font-size: 14px;
+    }
+
+    .detail-container{
+        margin: 12px;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .detail-container h2{
+        font-size: 15px;
+        line-height: 2;
+    }
+
+    .description{
+        font-size: 13px;
+    }
+}
+/* دکمه شناور تلگرام */
+.float-telegram {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background: #229ED9;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-decoration: none;
+    transition: .3s;
+    z-index: 999;
+}
+
+.float-telegram:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(34,158,217,0.4);
+}
+
+@media(max-width:768px){
+    .float-telegram {
+        bottom: 15px;
+        left: 15px;
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
+}
+/* هدر پروفایل کوچک در صفحه جزئیات هر فرد */
+.detail-profile{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+    padding-bottom:20px;
+    border-bottom:1px dashed #d3f0da;
+}
+
+.detail-profile .profile-photo{
+    width:64px;
+    height:64px;
+    margin:0;
+    flex-shrink:0;
+}
+
+.detail-profile-info h3{
+    font-size:15px;
+    color:#1a1a1a;
+    margin-bottom:4px;
+}
+
+.detail-profile-info p{
+    font-size:12px;
+    color:#444;
+}
+
+@media(max-width:768px){
+    .detail-profile{
+        gap:12px;
+        margin-bottom:15px;
+        padding-bottom:15px;
+    }
+    .detail-profile .profile-photo{
+        width:52px;
+        height:52px;
+    }
+}
