@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>راهنمای کامل بورسیه GKS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Vazirmatn',tahoma; }
+html, body{ max-width:100%; overflow-x:hidden; }
+img{ max-width:100%; height:auto; }
+body{ background: linear-gradient(135deg, #fdeef3 0%, #eafaf1 100%); background-attachment: fixed; font-weight:500; }
+.top-bar{ background:white; padding:12px 15px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+.top-bar a{ text-decoration:none; background:#c2487a; color:white; padding:9px 14px; border-radius:8px; font-size:14px; }
+.container{ max-width:900px; margin:20px auto; background:white; padding:28px; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+.container h2{ color:#c2487a; margin-bottom:15px; font-size:18px; }
+img{ width:100%; border-radius:10px; margin-bottom:15px; }
+p{ line-height:2; font-size:14px; color:#1a1a1a; }
+.comments-section{ max-width:900px; margin:20px auto; padding:0 15px 20px; }
+.comments-section h2{ color:#c2487a; margin-bottom:15px; font-size:18px; }
+.login-warning{ background:#fff3cd; border:1px solid #ffe69c; padding:15px; border-radius:10px; margin-bottom:15px; font-size:14px; line-height:2; }
+.login-warning a{ display:inline-block; margin-top:5px; background:#c2487a; color:white; text-decoration:none; padding:8px 15px; border-radius:8px; }
+.comment{ background:#f8f8f8; border-radius:12px; padding:15px; margin-bottom:15px; }
+.comment-user{ margin-bottom:8px; font-size:14px; }
+.comment-text{ line-height:1.8; font-size:14px; }
+.float-telegram{ position:fixed; bottom:25px; left:25px; background:#229ED9; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:26px; box-shadow:0 4px 15px rgba(0,0,0,0.2); text-decoration:none; z-index:999; }
+@media(max-width:768px){ .container{ margin:12px; padding:18px; } }
+</style>
+</head>
+<body>
+<div class="top-bar">
+    <a href="blog.html"><i class="fas fa-arrow-left"></i> بازگشت به وبلاگ‌ها</a>
+</div>
+<div class="container">
+    <h2>راهنمای کامل بورسیه GKS</h2>
+    <img src="images/blog1.jpg">
+    <p>در این مقاله درباره مراحل گرفتن بورسیه GKS توضیح داده شده است...</p>
+</div>
+<div class="comments-section">
+    <h2>نظرات کاربران</h2>
+    <div id="login-warning" class="login-warning">
+        برای ثبت نظر باید وارد حساب کاربری شوید.
+        <br>
+        <a href="login-email.html">ورود</a> &nbsp;|&nbsp; <a href="register.html">ثبت نام</a>
+    </div>
+    <div id="comment-form" style="display:none; margin-bottom:25px;">
+        <div style="background:#fdeef3; padding:15px; border-radius:12px; margin-bottom:15px;">
+            <span style="font-size:13px; color:#c2487a;"><i class="fas fa-user-circle"></i> در حال ارسال به عنوان: </span>
+            <strong id="commenter-name" style="color:#c2487a;"></strong>
+        </div>
+        <textarea id="comment-text" placeholder="نظر خود را بنویسید..." style="width:100%; min-height:100px; padding:12px; border:1px solid #ddd; border-radius:10px; font-family:Vazirmatn,tahoma; font-size:14px; resize:vertical;"></textarea>
+        <button onclick="submitComment()" style="margin-top:10px; padding:10px 20px; background:#c2487a; color:white; border:none; border-radius:8px; cursor:pointer; font-family:Vazirmatn,tahoma; font-size:14px;">
+            <i class="fas fa-paper-plane"></i> ثبت نظر
+        </button>
+    </div>
+    <div id="comments-list">
+        <div style="text-align:center; color:#666; padding:20px;" id="loading-comments">
+            <i class="fas fa-spinner fa-spin"></i> در حال بارگذاری نظرات...
+        </div>
+    </div>
+    </div>
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+<script src="https://www.gstatic.com/firebasejs/9.23.
+0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const commentsRef = db.collection('comments').doc('blog1').collection('items');
+    let lastSnapshot = null;
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            document.getElementById('login-warning').style.display = 'none';
+            document.getElementById('comment-form').style.display = 'block';
+            document.getElementById('commenter-name').textContent = user.displayName || user.email;
+        } else {
+            document.getElementById('login-warning').style.display = 'block';
+            document.getElementById('comment-form').style.display = 'none';
+        }
+        if (lastSnapshot) renderComments(lastSnapshot);
+    });
+    commentsRef.orderBy('timestamp', 'desc').onSnapshot(function(snapshot) {
+        lastSnapshot = snapshot;
+        renderComments(snapshot);
+    });
+    function renderComments(snapshot) {
+        document.getElementById('loading-comments').style.display = 'none';
+        const list = document.getElementById('comments-list');
+        list.innerHTML = '';
+        if (snapshot.empty) {
+            list.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">هنوز نظری ثبت نشده است.</div>';
+            return;
+        }
+        const currentUser = auth.currentUser;
+        snapshot.forEach(function(doc) {
+            const data = doc.data();
+            const commentId = doc.id;
+            const currentUserLabel = currentUser ? (currentUser.displayName || currentUser.email) : null;
+            const isOwner = currentUser && (
+                (data.uid && data.uid === currentUser.uid) ||
+                (!data.uid && data.name === currentUserLabel)
+            );
+            const div = document.createElement('div');
+            div.className = 'comment';
+            div.id = 'comment-' + commentId;
+            let ownerButtons = '';
+            if (isOwner) {
+                ownerButtons = `
+                    <div class="comment-actions" style="margin-top:8px; display:flex; gap:12px;">
+                        <button onclick="startEditComment('${commentId}')" style="background:none; border:none; color:#c2487a; font-size:12px; cursor:pointer; font-family:Vazirmatn,tahoma; padding:0;">
+                            <i class="fas fa-pen"></i> ویرایش
+                        </button>
+                        <button onclick="deleteComment('${commentId}')" style="background:none; border:none; color:#c00; font-size:12px; cursor:pointer; font-family:Vazirmatn,tahoma; padding:0;">
+                            <i class="fas fa-trash"></i> حذف
+                        </button>
+                    </div>
+                `;
+            }
+            const editedTag = data.edited ? '<span style="font-size:10px; color:#888;"> (ویرایش‌شده)</span>' : '';
+            div.innerHTML = `
+                <div class="comment-user"><strong>${data.name}</strong> <span style="font-size:11px; color:#666;">${data.time || ''}</span>${editedTag}</div>
+                <div class="comment-text" id="comment-text-${commentId}">${data.text}</div>
+                ${ownerButtons}
+            `;
+            list.appendChild(div);
+            // اتصال دائمی کامنت‌های قدیمی (بدون uid) به حساب کاربری فعلی در صورت تطابق نام
+            if (isOwner && !data.uid) {
+                commentsRef.doc(commentId).update({ uid: currentUser.uid }).catch(function(){});
+            }
+
+        });
+    }
+    window.startEditComment = function(commentId) {
+        const textDiv = document.getElementById('comment-text-' + commentId);
+        const currentText = textDiv.textContent;
+        textDiv.innerHTML = `
+            <textarea id="edit-textarea-${commentId}" style="width:100%; min-height:80px; padding:10px; border:1px solid #ddd; border-radius:8px; font-family:Vazirmatn,tahoma; font-size:14px; resize:vertical;">${currentText}</textarea>
+            <div style="margin-top:8px; display:flex; gap:10px;">
+                <button onclick="saveEditComment('${commentId}')" style="background:#5cb377; color:#204d32; border:none; padding:7px 14px; border-radius:6px; cursor:pointer; font-family:Vazirmatn,tahoma; font-size:12px;">
+                    <i class="fas fa-check"></i> ذخیره
+                </button>
+                <button onclick="cancelEditComment('${commentId}', \${currentText.replace(//g, "'")}\`)" style="background:#eee; color:#333; border:none; padding:7px 14px; border-radius:6px; cursor:pointer; font-family:Vazirmatn,tahoma; font-size:12px;">
+                    انصراف
+                </button>
+            </div>
+        `;
+    }
+    window.cancelEditComment = function(commentId, originalText) {
+        document.getElementById('comment-text-' + commentId).textContent = originalText;
+    }
+    window.saveEditComment = async function(commentId) {
+        const textarea = document.getElementById('edit-textarea-' + commentId);
+        const newText = textarea.value.trim();
+        if (!newText) return;
+        try {
+            await commentsRef.doc(commentId).update({
+                text: newText,
+                edited: true
+            });
+        } catch (e) {
+            alert('خطا در ویرایش نظر: ' + e.message + ' (کد: ' + e.code + ')');
+        }
+    }
+    window.deleteComment = async function(commentId) {
+        if (!confirm('آیا مطمئنید می‌خواهید این نظر را حذف کنید؟')) return;
+        try {
+            await commentsRef.doc(commentId).delete();
+        } catch (e) {
+            alert('خطا در حذف نظر: ' + e.message + ' (کد: ' + e.code + ')');
+        }
+    }
+    window.submitComment = async function() {
+        const text = document.getElementById('comment-text').value.trim();
+        const user = auth.currentUser;
+        if (!text || !user) return;
+        const btn = document.querySelector('#comment-form button');
+        btn.textContent = 'در حال ارسال...';
+        btn.disabled = true;
+        try {
+            await commentsRef.add({
+                uid: user.uid,
+                name: user.displayName || user.email,
+                text: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                time: new Date().toLocaleDateString('fa-IR')
+            });
+            document.getElementById('comment-text').value = '';
+        } catch (e) {
+            alert('خطا در ارسال نظر. لطفاً دوباره تلاش کنید.');
+        }
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> ثبت نظر';
+        btn.disabled = false;
+    }
+}
+</script>
+</body>
+</html>
