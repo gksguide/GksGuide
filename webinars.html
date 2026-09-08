@@ -1,0 +1,118 @@
+<!DOCTYPE html> 
+<html lang="fa" dir="rtl"> 
+ 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+ 
+<title>وبینارها</title> 
+ 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="webinars.css"> 
+</head> 
+<body> 
+ 
+<a href="index.html" class="back-btn"> 
+<i class="fas fa-home"></i> بازگشت به صفحه اصلی 
+</a> 
+ 
+<h1 class="page-title">وبینارها</h1> 
+ 
+<div class="webinar-container"> 
+ 
+<div class="webinar-card"> 
+ 
+<img src="images/webinar1.jpg"> 
+ 
+<div class="webinar-content"> 
+ 
+<h3>آشنایی با بورسیه GKS</h3> 
+ 
+<p>تاریخ برگزاری: 1405/03/10</p> 
+ 
+<a href="webinar1.html"> 
+مشاهده وبینار 
+</a> 
+ 
+</div> 
+ 
+</div> 
+ 
+<div class="webinar-card"> 
+ 
+<img src="images/webinar2.jpg"> 
+ 
+<div class="webinar-content"> 
+ 
+<h3>نحوه آماده سازی مدارک</h3> 
+ 
+<p>تاریخ برگزاری: 1405/04/12</p> 
+ 
+<a href="webinar2.html"> 
+مشاهده وبینار 
+</a> 
+ 
+</div> 
+ 
+</div> 
+ 
+<div class="webinar-card"> 
+ 
+<img src="images/0c2bf.jpg"> 
+ 
+<div class="webinar-content"> 
+ 
+<h3>مصاحبه سفارت کره</h3> 
+ 
+<p>تاریخ برگزاری: 1405/05/01</p> 
+ 
+<a href="webinar3.html"> 
+مشاهده وبینار 
+</a> 
+ 
+</div> 
+ 
+</div> 
+ 
+</div> 
+ <!-- دکمه شناور تلگرام -->
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const container = document.querySelector('.webinar-container');
+
+    db.collection('webinars').orderBy('createdAt', 'desc').get().then(function(snapshot) {
+        snapshot.forEach(function(doc) {
+            const d = doc.data();
+            const card = document.createElement('div');
+            card.className = 'webinar-card';
+            card.innerHTML = `
+                <div class="webinar-content">
+                    <h3>${d.title}</h3>
+                    <p>تاریخ برگزاری: ${d.date || ''}</p>
+                    <a href="webinar-view.html?id=${doc.id}">مشاهده وبینار</a>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }).catch(function(e) {
+        console.error('خطا در بارگذاری وبینارهای پنل:', e);
+    });
+}
+</script>
+</body> 
+</html>

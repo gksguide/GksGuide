@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نتیجه مشاوره</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="results.css">
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="results.html"> <i class="fas fa-arrow-left"></i> بازگشت به تجربیات مشاوره </a>
+</div>
+
+<div class="detail-container" id="content">
+    <div style="text-align:center; color:#666; padding:20px;">در حال بارگذاری...</div>
+</div>
+
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const params = new URLSearchParams(window.location.search);
+    const resultId = params.get('id');
+    const content = document.getElementById('content');
+
+    if (!resultId) {
+        content.innerHTML = '<div style="text-align:center; padding:20px;">پروفایل پیدا نشد.</div>';
+    } else {
+        db.collection('results_experiences').doc(resultId).get().then(function(doc) {
+            if (!doc.exists) {
+                content.innerHTML = '<div style="text-align:center; padding:20px;">پروفایل پیدا نشد.</div>';
+                return;
+            }
+            const d = doc.data();
+            document.title = d.name || 'نتیجه مشاوره';
+
+            let screenshotHtml = '';
+            if (d.screenshot) {
+                screenshotHtml = `<img class="screenshot" src="${d.screenshot}">`;
+            }
+
+            content.innerHTML = `
+                <div class="detail-profile">
+                    <img class="profile-photo" src="${d.photo}" alt="${d.name}">
+                    <div class="detail-profile-info">
+                        <h3>${d.name} <span style="font-size:11px; color:#666; direction:ltr; display:inline-block;">(${d.nameEn || ''})</span></h3>
+                        <p>${d.degree || ''} | ${d.year || ''} &nbsp;—&nbsp; <span style="direction:ltr; display:inline-block;">${d.degreeEn || ''} | ${d.yearEn || ''}</span></p>
+                    </div>
+                </div>
+                <h2>${d.title || ''}</h2>
+                ${screenshotHtml}
+                <div class="description">
+                    <h3>${(d.post || '').replace(/\n/g, '<br>')}</h3>
+                </div>
+            `;
+        }).catch(function(e) {
+            content.innerHTML = '<div style="text-align:center; padding:20px;">خطا: ' + e.message + '</div>';
+        });
+    }
+}
+</script>
+</body>
+</html>
