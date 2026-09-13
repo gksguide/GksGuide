@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Vazirmatn',tahoma; }
+html, body{ max-width:100%; overflow-x:hidden; }
+body{ background: linear-gradient(135deg, #fdeef3 0%, #eafaf1 100%); background-attachment:fixed; font-weight:500; min-height:100vh; }
+
+.top-bar{ background:white; padding:12px 15px; box-shadow:0 2px 10px rgba(0,0,0,0.1); display:flex; justify-content:space-between; align-items:center; }
+.top-bar a{ text-decoration:none; background:#c2487a; color:white; padding:9px 14px; border-radius:8px; font-size:14px; }
+.top-bar span{ font-size:13px; color:#444; }
+
+#gate{ max-width:420px; margin:80px auto; background:white; padding:30px; border-radius:15px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+#gate i{ font-size:34px; color:#c2487a; margin-bottom:12px; }
+#gate p{ font-size:14px; color:#444; line-height:2; }
+
+#panel{ display:none; max-width:1000px; margin:20px auto; padding:0 15px 40px; }
+
+.tabs{ display:flex; gap:8px; margin:20px 0; flex-wrap:wrap; }
+.tab-btn{ background:white; border:2px solid #eee; color:#444; padding:10px 18px; border-radius:10px; cursor:pointer; font-family:Vazirmatn,tahoma; font-size:13px; font-weight:500; transition:.2s; }
+.tab-btn.active{ background:#c2487a; border-color:#c2487a; color:white; }
+
+.tab-content{ display:none; }
+.tab-content.active{ display:block; }
+
+.panel-box{ background:white; border-radius:15px; padding:24px; margin-bottom:20px; box-shadow:0 4px 18px rgba(0,0,0,0.1); }
+.panel-box h3{ color:#c2487a; margin-bottom:16px; font-size:16px; border-bottom:2px solid #fdeef3; padding-bottom:10px; }
+
+.form-row{ margin-bottom:12px; }
+.form-row label{ display:block; font-size:12px; color:#444; margin-bottom:5px; }
+.form-row input, .form-row textarea, .form-row select{
+    width:100%; padding:10px 12px; border:1.5px solid #ddd; border-radius:8px;
+    font-family:Vazirmatn,tahoma; font-size:13px; outline:none;
+}
+.form-row textarea{ min-height:80px; resize:vertical; }
+.form-row input:focus, .form-row textarea:focus{ border-color:#c2487a; }
+
+.btn{ background:#c2487a; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-family:Vazirmatn,tahoma; font-size:13px; font-weight:700; }
+.btn:hover{ background:#a03763; }
+.btn-green{ background:#5cb377; color:#204d32; }
+.btn-green:hover{ background:#439462; color:white; }
+.btn-outline{ background:none; border:1.5px solid #ddd; color:#444; }
+.btn-outline:hover{ border-color:#c2487a; color:#c2487a; }
+.btn-small{ padding:6px 12px; font-size:12px; }
+.btn-red{ background:#ffe0e0; color:#c00; border:none; }
+.btn-red:hover{ background:#ffcaca; }
+
+.item-row{ border:1px solid #eee; border-radius:10px; padding:14px; margin-bottom:10px; }
+.item-row-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; }
+.item-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.comment-item{ border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:12px; }
+.comment-item.pending{ border-color:#f0b429; background:#fffaf0; }
+.badge{ display:inline-block; font-size:11px; padding:3px 9px; border-radius:20px; margin-right:6px; }
+.badge-pending{ background:#fff3cd; color:#8a6100; }
+.badge-approved{ background:#e0ffe0; color:#207020; }
+.badge-page{ background:#fdeef3; color:#c2487a; }
+.reply-box{ margin-top:10px; background:#f7fcf9; padding:10px; border-radius:8px; }
+
+.loading{ text-align:center; color:#888; padding:30px; font-size:13px; }
+
+@media(max-width:768px){
+    #panel{ padding:0 10px 30px; }
+    .panel-box{ padding:16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html"><i class="fas fa-home"></i> بازگشت به سایت</a>
+    <span id="admin-email"></span>
+</div>
+
+<div id="gate">
+    <i class="fas fa-lock"></i>
+    <p id="gate-text">در حال بررسی دسترسی...</p>
+</div>
+
+<div id="panel">
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('comments')"><i class="fas fa-comments"></i> کامنت‌ها</button>
+        <button class="tab-btn" onclick="switchTab('webinars')"><i class="fas fa-video"></i> وبینارها</button>
+        <button class="tab-btn" onclick="switchTab('results')"><i class="fas fa-user-graduate"></i> نتایج مشاوره</button>
+        <button class="tab-btn" onclick="switchTab('files')"><i class="fas fa-folder-open"></i> فایل‌ها</button>
+    </div>
+
+    <!-- کامنت‌ها -->
+    <div id="tab-comments" class="tab-content active">
+        <div class="panel-box">
+            <h3>مدیریت کامنت‌ها</h3>
+            <div id="comments-list"><div class="loading">در حال بارگذاری...</div></div>
+        </div>
+    </div>
+
+    <!-- وبینارها -->
+    <div id="tab-webinars" class="tab-content">
+        <div class="panel-box">
+            <h3 id="webinar-form-title">افزودن وبینار جدید</h3>
+            <div class="form-row"><label>عنوان</label><input id="w-title" placeholder="مثلاً: نحوه آماده‌سازی مدارک"></div>
+            <div class="form-row"><label>تاریخ برگزاری</label><input id="w-date" placeholder="۱۴۰۵/۰۵/۰۱"></div>
+            <div class="form-row"><label>لینک ویدیوی گوگل درایو (لینک preview یا view)</label><input id="w-link" placeholder="https://drive.google.com/file/d/..."></div>
+            <div class="form-row"><label>توضیحات وبینار</label><textarea id="w-desc" placeholder="توضیح کوتاه درباره محتوای وبینار"></textarea></div>
+            <button class="btn" id="w-submit-btn" onclick="saveWebinar()">افزودن وبینار</button>
+            <button class="btn btn-outline" id="w-cancel-btn" onclick="cancelWebinarEdit()" style="display:none;">انصراف از ویرایش</button>
+        </div>
+        <div class="panel-box">
+            <h3>وبینارهای ثبت‌شده از پنل</h3>
+            <div id="webinars-list"><div class="loading">در حال بارگذاری...</div></div>
+        </div>
+    </div>
+
+    <!-- نتایج مشاوره -->
+    <div id="tab-results" class="tab-content">
+        <div class="panel-box">
+            <h3 id="result-form-title">افزودن پروفایل نتیجه مشاوره</h3>
+            <div class="form-row"><label>نام (فارسی)</label><input id="r-name"></div>
+            <div class="form-row"><label>نام (انگلیسی)</label><input id="r-name-en"></div>
+            <div class="form-row"><label>مقطع (فارسی) — مثلاً: مقطع کارشناسی</label><input id="r-degree"></div>
+            <div class="form-row"><label>مقطع (انگلیسی) — مثلاً: Bachelor's Degree</label><input id="r-degree-en"></div>
+            <div class="form-row"><label>سال اقدام (فارسی) — مثلاً: سال اقدام ۱۴۰۵</label><input id="r-year"></div>
+            <div class="form-row"><label>سال اقدام (انگلیسی) — مثلاً: Application Year 2026</label><input id="r-year-en"></div>
+            <div class="form-row"><label>لینک عکس پروفایل (گوگل درایو یا هر لینک تصویر)</label><input id="r-photo" placeholder="https://..."></div>
+            <div class="form-row"><label>لینک اسکرین‌شات قبولی (اختیاری)</label><input id="r-screenshot" placeholder="https://..."></div>
+            <div class="form-row"><label>عنوان پست</label><input id="r-title" placeholder="مثلاً: پذیرش فول‌فاند مقطع ارشد"></div>
+            <div class="form-row"><label>متن کامل پست/تجربه</label><textarea id="r-post"></textarea></div>
+            <button class="btn" id="r-submit-btn" onclick="saveResult()">افزودن پروفایل</button>
+            <button class="btn btn-outline" id="r-cancel-btn" onclick="cancelResultEdit()" style="display:none;">انصراف از ویرایش</button>
+        </div>
+        <div class="panel-box">
+            <h3>پروفایل‌های ثبت‌شده از پنل</h3>
+            <div id="results-list"><div class="loading">در حال بارگذاری...</div></div>
+        </div>
+    </div>
+
+    <!-- فایل‌ها -->
+    <div id="tab-files" class="tab-content">
+        <div class="panel-box">
+            <h3 id="file-form-title">افزودن فایل کاربردی</h3>
+            <div class="form-row"><label>عنوان</label><input id="f-title"></div>
+            <div class="form-row"><label>توضیح کوتاه</label><textarea id="f-desc"></textarea></div>
+            <div class="form-row"><label>لینک فایل</label><input id="f-link" placeholder="https://drive.google.com/..."></div>
+            <button class="btn" id="f-submit-btn" onclick="saveFile()">افزودن فایل</button>
+            <button class="btn btn-outline" id="f-cancel-btn" onclick="cancelFileEdit()" style="display:none;">انصراف از ویرایش</button>
+        </div>
+        <div class="panel-box">
+            <h3>فایل‌های ثبت‌شده از پنل</h3>
+            <div id="files-list"><div class="loading">در حال بارگذاری...</div></div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let editingWebinarId = null;
+    let editingResultId = null;
+    let editingFileId = null;
+
+    window.switchTab = function(name) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        event.target.closest('.tab-btn').classList.add('active');
+    };
+
+    auth.onAuthStateChanged(async function(user) {
+        const gate = document.getElementById('gate');
+        const gateText = document.getElementById('gate-text');
+        const panel = document.getElementById('panel');
+
+        if (!user) {
+            gateText.innerHTML = 'برای دسترسی به پنل مدیریت باید وارد حساب کاربری ادمین شوید.<br><br><a href="login-email.html" style="color:#c2487a;">ورود به حساب</a>';
+            return;
+        }
+
+        try {
+            const adminDoc = await db.collection('admins').doc(user.uid).get();
+            if (!adminDoc.exists) {
+                gateText.textContent = 'این حساب کاربری دسترسی ادمین ندارد.';
+                return;
+            }
+        } catch (e) {
+            gateText.textContent = 'خطا در بررسی دسترسی: ' + e.message;
+            return;
+        }
+
+        document.getElementById('admin-email').textContent = user.email;
+        gate.style.display = 'none';
+        panel.style.display = 'block';
+
+        loadComments();
+        loadWebinars();
+        loadResults();
+        loadFiles();
+    });
+
+    // ================= کامنت‌ها =================
+    function loadComments() {
+        db.collectionGroup('items').orderBy('timestamp', 'desc').onSnapshot(function(snapshot) {
+            const list = document.getElementById('comments-list');
+            list.innerHTML = '';
+            if (snapshot.empty) {
+                list.innerHTML = '<div class="loading">هیچ کامنتی ثبت نشده.</div>';
+                return;
+            }
+            snapshot.forEach(function(doc) {
+                const data = doc.data();
+                const pageId = doc.ref.parent.parent.id;
+                const isApproved = data.approved !== false;
+                const div = document.createElement('div');
+                div.className = 'comment-item' + (isApproved ? '' : ' pending');
+                div.innerHTML = `
+                    <span class="badge badge-page">${pageId}</span>
+                    <span class="badge ${isApproved ? 'badge-approved' : 'badge-pending'}">${isApproved ? 'تایید شده' : 'در انتظار تایید'}</span>
+                    <div style="margin-top:8px; font-size:13px;"><strong>${data.name || 'ناشناس'}</strong> <span style="color:#888; font-size:11px;">${data.time || ''}</span></div>
+                    <div style="margin-top:6px; font-size:13px; line-height:1.8;">${data.text || ''}</div>
+                    ${data.adminReply ? `<div class="reply-box"><strong style="font-size:12px; color:#5cb377;">پاسخ ادمین:</strong><div style="font-size:12px; margin-top:4px;">${data.adminReply}</div></div>` : ''}
+                    <div class="item-actions" style="margin-top:10px;">
+                        <button class="btn btn-small ${isApproved ? 'btn-red' : 'btn-green'}" onclick="toggleApprove('${pageId}','${doc.id}', ${isApproved})">${isApproved ? 'لغو تایید' : 'تایید نمایش'}</button>
+                        <button class="btn btn-small btn-outline" onclick="toggleReplyBox('${pageId}_${doc.id}')">پاسخ</button>
+                        <button class="btn btn-small btn-red" onclick="deleteComment('${pageId}','${doc.id}')">حذف</button>
+                    </div>
+                    <div id="reply-form-${pageId}_${doc.id}" style="display:none; margin-top:10px;">
+                        <textarea id="reply-text-${pageId}_${doc.id}" placeholder="پاسخ ادمین..." style="width:100%; min-height:60px; padding:8px; border:1px solid #ddd; border-radius:8px; font-family:Vazirmatn,tahoma; font-size:12px;">${data.adminReply || ''}</textarea>
+                        <button class="btn btn-small" style="margin-top:6px;" onclick="submitReply('${pageId}','${doc.id}')">ذخیره پاسخ</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }, function(err) {
+            document.getElementById('comments-list').innerHTML = '<div class="loading">خطا: ' + err.message + '<br>(اگر پیام درباره Index بود، روی لینکی که در کنسول مرورگر ظاهر می‌شود بزنید تا ایندکس لازم ساخته شود)</div>';
+        });
+    }
+
+    window.toggleApprove = async function(pageId, commentId, currentlyApproved) {
+        await db.collection('comments').doc(pageId).collection('items').doc(commentId).update({ approved: !currentlyApproved });
+    };
+
+    window.deleteComment = async function(pageId, commentId) {
+        if (!confirm('حذف این کامنت؟')) return;
+        await db.collection('comments').doc(pageId).collection('items').doc(commentId).delete();
+    };
+
+    window.toggleReplyBox = function(key) {
+        const box = document.getElementById('reply-form-' + key);
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    };
+
+    window.submitReply = async function(pageId, commentId) {
+        const text = document.getElementById('reply-text-' + pageId + '_' + commentId).value.trim();
+        await db.collection('comments').doc(pageId).collection('items').doc(commentId).update({ adminReply: text });
+        alert('پاسخ ذخیره شد.');
+    };
+
+    // ================= وبینارها =================
+    function loadWebinars() {
+        db.collection('webinars').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
+            const list = document.getElementById('webinars-list');
+            list.innerHTML = '';
+            if (snapshot.empty) { list.innerHTML = '<div class="loading">چیزی ثبت نشده.</div>'; return; }
+            snapshot.forEach(function(doc) {
+                const d = doc.data();
+                const div = document.createElement('div');
+                div.className = 'item-row';
+                div.innerHTML = `
+                    <div class="item-row-head">
+                        <div><strong>${d.title}</strong><br><span style="font-size:12px; color:#888;">${d.date || ''}</span></div>
+                        <div class="item-actions">
+                            <button class="btn btn-small btn-outline" onclick='editWebinar("${doc.id}")'>ویرایش</button>
+                            <button class="btn btn-small btn-red" onclick="deleteWebinar('${doc.id}')">حذف</button>
+                        </div>
+                    </div>`;
+                list.appendChild(div);
+            });
+        });
+    }
+
+    window.saveWebinar = async function() {
+        const payload = {
+            title: document.getElementById('w-title').value.trim(),
+            date: document.getElementById('w-date').value.trim(),
+            link: document.getElementById('w-link').value.trim(),
+            description: document.getElementById('w-desc').value.trim(),
+        };
+        if (!payload.title || !payload.link) { alert('عنوان و لینک الزامی است.'); return; }
+        if (editingWebinarId) {
+            await db.collection('webinars').doc(editingWebinarId).update(payload);
+        } else {
+            payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            await db.collection('webinars').add(payload);
+        }
+        cancelWebinarEdit();
+    };
+
+    window.editWebinar = async function(id) {
+        const doc = await db.collection('webinars').doc(id).get();
+        const d = doc.data();
+        editingWebinarId = id;
+        document.getElementById('w-title').value = d.title || '';
+        document.getElementById('w-date').value = d.date || '';
+        document.getElementById('w-link').value = d.link || '';
+        document.getElementById('w-desc').value = d.description || '';
+        document.getElementById('webinar-form-title').textContent = 'ویرایش وبینار';
+        document.getElementById('w-submit-btn').textContent = 'ذخیره تغییرات';
+        document.getElementById('w-cancel-btn').style.display = 'inline-block';
+        window.scrollTo(0,0);
+    };
+
+    window.cancelWebinarEdit = function() {
+        editingWebinarId = null;
+        ['w-title','w-date','w-link','w-desc'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('webinar-form-title').textContent = 'افزودن وبینار جدید';
+        document.getElementById('w-submit-btn').textContent = 'افزودن وبینار';
+        document.getElementById('w-cancel-btn').style.display = 'none';
+    };
+
+    window.deleteWebinar = async function(id) {
+        if (!confirm('حذف این وبینار؟')) return;
+        await db.collection('webinars').doc(id).delete();
+    };
+
+    // ================= نتایج مشاوره =================
+    function loadResults() {
+        db.collection('results_experiences').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
+            const list = document.getElementById('results-list');
+            list.innerHTML = '';
+            if (snapshot.empty) { list.innerHTML = '<div class="loading">چیزی ثبت نشده.</div>'; return; }
+            snapshot.forEach(function(doc) {
+                const d = doc.data();
+                const div = document.createElement('div');
+                div.className = 'item-row';
+                div.innerHTML = `
+                    <div class="item-row-head">
+                        <div><strong>${d.name}</strong><br><span style="font-size:12px; color:#888;">${d.degree || ''} — ${d.year || ''}</span></div>
+                        <div class="item-actions">
+                            <button class="btn btn-small btn-outline" onclick='editResult("${doc.id}")'>ویرایش</button>
+                            <button class="btn btn-small btn-red" onclick="deleteResult('${doc.id}')">حذف</button>
+                        </div>
+                    </div>`;
+                list.appendChild(div);
+            });
+        });
+    }
+
+    window.saveResult = async function() {
+        const payload = {
+            name: document.getElementById('r-name').value.trim(),
+            nameEn: document.getElementById('r-name-en').value.trim(),
+            degree: document.getElementById('r-degree').value.trim(),
+            degreeEn: document.getElementById('r-degree-en').value.trim(),
+            year: document.getElementById('r-year').value.trim(),
+            yearEn: document.getElementById('r-year-en').value.trim(),
+            photo: document.getElementById('r-photo').value.trim(),
+            screenshot: document.getElementById('r-screenshot').value.trim(),
+            title: document.getElementById('r-title').value.trim(),
+            post: document.getElementById('r-post').value.trim(),
+        };
+        if (!payload.name || !payload.photo) { alert('نام و لینک عکس الزامی است.'); return; }
+        if (editingResultId) {
+            await db.collection('results_experiences').doc(editingResultId).update(payload);
+        } else {
+            payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            await db.collection('results_experiences').add(payload);
+        }
+        cancelResultEdit();
+    };
+
+    window.editResult = async function(id) {
+        const doc = await db.collection('results_experiences').doc(id).get();
+        const d = doc.data();
+        editingResultId = id;
+        document.getElementById('r-name').value = d.name || '';
+        document.getElementById('r-name-en').value = d.nameEn || '';
+        document.getElementById('r-degree').value = d.degree || '';
+        document.getElementById('r-degree-en').value = d.degreeEn || '';
+        document.getElementById('r-year').value = d.year || '';
+        document.getElementById('r-year-en').value = d.yearEn || '';
+        document.getElementById('r-photo').value = d.photo || '';
+        document.getElementById('r-screenshot').value = d.screenshot || '';
+        document.getElementById('r-title').value = d.title || '';
+        document.getElementById('r-post').value = d.post || '';
+        document.getElementById('result-form-title').textContent = 'ویرایش پروفایل';
+        document.getElementById('r-submit-btn').textContent = 'ذخیره تغییرات';
+        document.getElementById('r-cancel-btn').style.display = 'inline-block';
+        window.scrollTo(0,0);
+    };
+
+    window.cancelResultEdit = function() {
+        editingResultId = null;
+        ['r-name','r-name-en','r-degree','r-degree-en','r-year','r-year-en','r-photo','r-screenshot','r-title','r-post'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('result-form-title').textContent = 'افزودن پروفایل نتیجه مشاوره';
+        document.getElementById('r-submit-btn').textContent = 'افزودن پروفایل';
+        document.getElementById('r-cancel-btn').style.display = 'none';
+    };
+
+    window.deleteResult = async function(id) {
+        if (!confirm('حذف این پروفایل؟')) return;
+        await db.collection('results_experiences').doc(id).delete();
+    };
+
+    // ================= فایل‌ها =================
+    function loadFiles() {
+        db.collection('useful_files').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
+            const list = document.getElementById('files-list');
+            list.innerHTML = '';
+            if (snapshot.empty) { list.innerHTML = '<div class="loading">چیزی ثبت نشده.</div>'; return; }
+            snapshot.forEach(function(doc) {
+                const d = doc.data();
+                const div = document.createElement('div');
+                div.className = 'item-row';
+                div.innerHTML = `
+                    <div class="item-row-head">
+                        <div><strong>${d.title}</strong></div>
+                        <div class="item-actions">
+                            <button class="btn btn-small btn-outline" onclick='editFile("${doc.id}")'>ویرایش</button>
+                            <button class="btn btn-small btn-red" onclick="deleteFile('${doc.id}')">حذف</button>
+                        </div>
+                    </div>`;
+                list.appendChild(div);
+            });
+        });
+    }
+
+    window.saveFile = async function() {
+        const payload = {
+            title: document.getElementById('f-title').value.trim(),
+            description: document.getElementById('f-desc').value.trim(),
+            link: document.getElementById('f-link').value.trim(),
+        };
+        if (!payload.title || !payload.link) { alert('عنوان و لینک الزامی است.'); return; }
+        if (editingFileId) {
+            await db.collection('useful_files').doc(editingFileId).update(payload);
+        } else {
+            payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            await db.collection('useful_files').add(payload);
+        }
+        cancelFileEdit();
+    };
+
+    window.editFile = async function(id) {
+        const doc = await db.collection('useful_files').doc(id).get();
+        const d = doc.data();
+        editingFileId = id;
+        document.getElementById('f-title').value = d.title || '';
+        document.getElementById('f-desc').value = d.description || '';
+        document.getElementById('f-link').value = d.link || '';
+        document.getElementById('file-form-title').textContent = 'ویرایش فایل';
+        document.getElementById('f-submit-btn').textContent = 'ذخیره تغییرات';
+        document.getElementById('f-cancel-btn').style.display = 'inline-block';
+        window.scrollTo(0,0);
+    };
+
+    window.cancelFileEdit = function() {
+        editingFileId = null;
+        ['f-title','f-desc','f-link'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('file-form-title').textContent = 'افزودن فایل کاربردی';
+        document.getElementById('f-submit-btn').textContent = 'افزودن فایل';
+        document.getElementById('f-cancel-btn').style.display = 'none';
+    };
+
+    window.deleteFile = async function(id) {
+        if (!confirm('حذف این فایل؟')) return;
+        await db.collection('useful_files').doc(id).delete();
+    };
+};
+</script>
+</body>
+</html>
