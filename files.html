@@ -1,0 +1,115 @@
+<!DOCTYPE html> 
+<html lang="en" dir="ltr"> 
+ 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Useful Files</title> 
+ 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="files.css"> 
+</head> 
+ 
+<body> 
+ 
+   <div class="top-bar"> 
+    <a href="index.html"><i class="fas fa-home"></i> Back to Home</a> 
+</div> 
+<div class="container"> 
+ 
+    <h2> Useful Files</h2> 
+ 
+    </div> 
+ 
+    <main class="files-container"> 
+ 
+        <div class="file-card"> 
+ 
+            <h3>Submitting Your Transcript</h3> 
+ 
+            <p> 
+                A guide to the steps for submitting your transcript     
+            </p> 
+ 
+           <a href="https://drive.google.com/file/d/168oz05LQK_LAAJqosxxOslDZx6NaL5rl/preview" target="_blank" class="file-btn"> 
+    View file 
+</a> 
+ 
+        </div> 
+ 
+        <div class="file-card"> 
+ 
+            <h3>Sample Study Plan</h3> 
+ 
+            <p> 
+                A ready-made sample for GKS applicants 
+            </p> 
+ 
+            <a href="files/study-plan.pdf" 
+               target="_blank" 
+               class="file-btn"> 
+ 
+                View file 
+ 
+            </a> 
+ 
+        </div> 
+ 
+        <div class="file-card"> 
+ 
+            <h3>Sample Personal Statement</h3> 
+ 
+            <p> 
+                A sample motivation letter 
+            </p> 
+ 
+            <a href="files/personal-statement.pdf" 
+               target="_blank" 
+               class="file-btn"> 
+ 
+                View file 
+ 
+            </a> 
+ 
+        </div> 
+ 
+    </main> 
+ <!-- Floating Telegram button -->
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const container = document.querySelector('.files-container');
+
+    db.collection('useful_files').orderBy('createdAt', 'desc').get().then(function(snapshot) {
+        snapshot.forEach(function(doc) {
+            const d = doc.data();
+            const card = document.createElement('div');
+            card.className = 'file-card';
+            card.innerHTML = `
+                <h3>${d.title}</h3>
+                <p>${d.description || ''}</p>
+                <a href="${d.link}" target="_blank" class="file-btn">View file</a>
+            `;
+            container.appendChild(card);
+        });
+    }).catch(function(e) {
+        console.error('Error loading panel files:', e);
+    });
+}
+</script>
+</body> 
+</html>

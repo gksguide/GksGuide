@@ -1,0 +1,81 @@
+<!DOCTYPE html> 
+<html lang="en" dir="ltr"> 
+ 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+ 
+<title>Success Stories</title> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="results.css"> 
+</head> 
+ 
+<body> 
+ 
+<div class="top-bar"> 
+    <a href="index.html"><i class="fas fa-home"></i> Back to Home</a> 
+</div> 
+ 
+<h2 style="text-align:center;margin:20px;">Success Stories</h2> 
+ 
+<div class="container"> 
+ 
+    <a href="result1.html" class="profile-card"> 
+        <img class="profile-photo" src="profiles/1.jpg" alt="Successful student 1"> 
+        <h3 class="profile-name">Student Name</h3> 
+        <p class="profile-meta">Bachelor's Degree &nbsp;|&nbsp; Application Year 2026</p> 
+    </a> 
+ 
+    <a href="result2.html" class="profile-card"> 
+        <img class="profile-photo" src="profiles/2.jpg" alt="Successful student 2"> 
+        <h3 class="profile-name">Student Name</h3> 
+        <p class="profile-meta">Master's Degree &nbsp;|&nbsp; Application Year 2025</p> 
+    </a> 
+ 
+    <a href="result3.html" class="profile-card"> 
+        <img class="profile-photo" src="profiles/3.jpg" alt="Successful student 3"> 
+        <h3 class="profile-name">Student Name</h3> 
+        <p class="profile-meta">Bachelor's Degree &nbsp;|&nbsp; Application Year 2025</p> 
+    </a> 
+ 
+</div> 
+ <!-- Floating Telegram button -->
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const container = document.querySelector('.container');
+
+    db.collection('results_experiences').orderBy('createdAt', 'desc').get().then(function(snapshot) {
+        snapshot.forEach(function(doc) {
+            const d = doc.data();
+            const a = document.createElement('a');
+            a.href = 'result-view.html?id=' + doc.id;
+            a.className = 'profile-card';
+            a.innerHTML = `
+                <img class="profile-photo" src="${d.photo}" alt="${d.nameEn || d.name}">
+                <h3 class="profile-name">${d.nameEn || d.name}</h3>
+                <p class="profile-meta">${d.degreeEn || d.degree || ''} &nbsp;|&nbsp; ${d.yearEn || d.year || ''}</p>
+            `;
+            container.appendChild(a);
+        });
+    }).catch(function(e) {
+        console.error('Error loading panel profiles:', e);
+    });
+}
+</script>
+</body> 
+</html>

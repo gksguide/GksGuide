@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GKS Migration</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- Loading Screen -->
+<div id="loader">
+    <div class="loader-content">
+        <div class="loader-logo">GKS Migration</div>
+        <div class="loader-subtitle">Scholarships &amp; Study Migration to South Korea</div>
+        <div class="loader-spinner"></div>
+    </div>
+</div>
+
+    <!-- Header -->
+    <header>
+
+        <div class="logo">GKS Migration</div>
+
+
+       <!-- Auth Buttons / User Profile -->
+       <div class="auth-buttons" id="auth-section">
+           <button onclick="location.href='login-email.html'">Sign in</button>
+           <button onclick="location.href='register.html'">Sign up</button>
+       </div>
+
+       <div id="user-section" style="display:none; position:relative;">
+           <div id="user-avatar" onclick="toggleMenu()" style="cursor:pointer; display:flex; align-items:center; gap:8px; background:#fdeef3; padding:8px 14px; border-radius:25px; border:2px solid #c2487a;">
+               <i class="fas fa-user-circle" style="font-size:22px; color:#c2487a;"></i>
+               <span id="user-name" style="font-size:14px; color:#c2487a; font-weight:bold;"></span>
+               <i class="fas fa-chevron-down" style="font-size:11px; color:#c2487a;"></i>
+           </div>
+           <div id="user-menu" style="display:none; position:fixed; top:70px; left:10px; right:10px; max-width:320px; background:white; border-radius:14px; box-shadow:0 8px 30px rgba(0,0,0,0.2); z-index:9999; overflow:hidden;">
+               <div style="padding:15px; background:#fdeef3; border-bottom:1px solid #d3f0da;">
+                   <div style="font-size:11px; color:#555; margin-bottom:5px;">Account email</div>
+                   <div id="user-email" style="font-size:14px; color:#c2487a; font-weight:bold; word-break:break-all;"></div>
+               </div>
+               <a onclick="logoutUser()" style="display:flex; align-items:center; gap:10px; padding:14px 15px; color:#cc0000; text-decoration:none; cursor:pointer; font-size:14px; font-family:Inter,Arial, sans-serif;">
+                   <i class="fas fa-sign-out-alt"></i> Sign out
+               </a>
+           </div>
+       </div>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+    </header>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+
+       <aside class="sidebar" id="sidebar">
+    <ul>
+        <li><a href="#">🏠 Home</a></li>
+        <li><a href="team.html">👥 Meet the Team </a></li>
+        <li><a href="webinars.html">🎥 Webinars</a></li>
+        <li><a href="results.html">📋 Success Stories</a></li>
+        <li><a href="blog.html">📰 Blog</a></li>
+        <li><a href="files.html">📁 Useful Files </a></li>
+        <li><a href="contact.html">📞 Contact Us</a></li>
+    </ul>
+</aside>
+
+        <!-- Main -->
+
+        <main class="main-content">
+
+            <section class="hero reveal">
+                <h1 class="hero-title">GKS <span class="hero-title-sub">(The Specialized Resource for the South Korean Government Scholarship)</span></h1>
+                <p class="hero-subtitle">More than 30 people have been accepted through this same path with our team. You could be next.</p>
+            </section>
+
+            <section class="intro reveal">
+                <p>KGSP Iran is run by Sania Sencholi, offering specialized consulting for the South Korean Government Scholarship.</p>
+            </section>
+
+            <section class="feature-cards">
+                <div class="feature-card reveal">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Recent Admission Results</h3>
+                    <p>22 people</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-1">
+                    <i class="fas fa-video"></i>
+                    <h3>Free Expert Webinars</h3>
+                    <p>Step-by-step guidance for every stage of your application</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-2">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>Useful Files</h3>
+                    <p>Files, guides, and analyses that make your path clear</p>
+                </div>
+            </section>
+
+            <div class="cta-wrapper reveal">
+                <a href="files.html" class="cta-button">Get started: browse the free files <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <section class="testimonials-section reveal" id="testimonials-section" style="display:none;">
+                <h3 class="testimonials-title">Experiences of Accepted Students</h3>
+                <p class="testimonials-subtitle">A few of the students who earned a scholarship through this same path</p>
+                <div class="testimonials-track" id="testimonials-track"></div>
+            </section>
+
+            <section class="slider">
+                <img src="367883f9b4d4fa019d5704232e997d27.jpg" class="slide">
+                <img src="96fb87478a79d6a54aa1c458d09b5b88.jpg" class="slide">
+                <img src="35557303c770b8d67425b1297cbf5987.jpg" class="slide">
+                 <img src="64a995dc39315ab81e18c327c40b32aa.jpg" class="slide">
+                  <img src="35557303c770b8d67425b1297cbf5987.jpg" class="slide">
+                <div class="slider-overlay">
+                    <h3>Scholarships &amp; Study Migration to South Korea</h3>
+                </div>
+            </section>
+
+            <div class="stats reveal">
+    <div class="stat-card">
+        <i class="fas fa-user-graduate"></i>
+        <h3>+20</h3>
+        <p>Successful students</p>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-university"></i>
+        <h3>+30</h3>
+        <p>Korean universities</p>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-star"></i>
+        <h3>5</h3>
+        <p>Years of experience</p>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-trophy"></i>
+        <h3>95%</h3>
+        <p>Success rate</p>
+    </div>
+</div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+window.onload = function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDQmdz3v9qFMiRmq9ftdx5AG684QKjWeHQ",
+        authDomain: "gksguide1-e7464.firebaseapp.com",
+        projectId: "gksguide1-e7464",
+        storageBucket: "gksguide1-e7464.firebasestorage.app",
+        messagingSenderId: "935501118637",
+        appId: "1:935501118637:web:bad899f43f835d2e1c9a24"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    db.collection('results_experiences').orderBy('createdAt', 'desc').limit(8).get().then(function(snapshot) {
+        if (snapshot.empty) return;
+        const track = document.getElementById('testimonials-track');
+        snapshot.forEach(function(doc) {
+            const d = doc.data();
+            const a = document.createElement('a');
+            a.href = 'result-view.html?id=' + doc.id;
+            a.className = 'testimonial-card';
+            a.innerHTML = `
+                <img src="${d.photo}" alt="${d.nameEn || d.name}">
+                <h4>${d.nameEn || d.name}</h4>
+                <p>${d.degreeEn || d.degree || ''}</p>
+            `;
+            track.appendChild(a);
+        });
+        document.getElementById('testimonials-section').style.display = 'block';
+    }).catch(function(e) {
+        console.error('Error loading student testimonials:', e);
+    });
+
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('user-section').style.display = 'block';
+            document.getElementById('user-name').textContent = user.displayName || 'User';
+            document.getElementById('user-email').textContent = user.email;
+        } else {
+            document.getElementById('auth-section').style.display = 'flex';
+            document.getElementById('user-section').style.display = 'none';
+        }
+    });
+
+    window.toggleMenu = function() {
+        const menu = document.getElementById('user-menu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+
+    window.logoutUser = function() {
+        auth.signOut().then(() => {
+            location.reload();
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        const userSection = document.getElementById('user-section');
+        if (!userSection.contains(e.target)) {
+            document.getElementById('user-menu').style.display = 'none';
+        }
+    });
+}
+</script>
+<script>
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+    }, 1500);
+});
+</script>
+<script>
+const revealItems = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.12 });
+revealItems.forEach(function(item) { revealObserver.observe(item); });
+
+const menuToggle = document.getElementById('menu-toggle');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+function closeMobileMenu() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('show');
+}
+function openMobileMenu() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('show');
+}
+if (menuToggle) {
+    menuToggle.addEventListener('click', function() {
+        sidebar.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    });
+}
+if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', closeMobileMenu);
+}
+sidebar.querySelectorAll('a').forEach(function(link) {
+    link.addEventListener('click', closeMobileMenu);
+});
+</script>
+<footer style="background:#c2487a; color:white; text-align:center; padding:18px; font-size:14px;">
+    ©  2026 GKS Guide | All Rights Reserved  
+  Developed by Hajar Sheikhzadeh
+  <br>
+  <a href="admin.html" style="color:rgba(255,255,255,0.6); font-size:11px; text-decoration:none;">Admin Panel</a>
+</footer>
+<!-- Floating Telegram button -->
+<a href="https://t.me/kgsp_iran" target="_blank" class="float-telegram">
+    <i class="fab fa-telegram"></i>
+</a>
+</body>
+</html>
